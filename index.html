@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>TRIKKU SUPER DASHBOARD</title>
+<meta name="description" content="TRIKKU SUPER DASHBOARD — Calendar, Gmail, Drive, Sheets, Blogger & YouTube in one place." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   THEME TOKENS
+   ============================================================ */
+:root{
+  --bg:#080b12;
+  --card:rgba(255,255,255,.045);
+  --card2:rgba(255,255,255,.08);
+  --card3:rgba(255,255,255,.12);
+  --border:rgba(255,255,255,.09);
+  --border2:rgba(255,255,255,.16);
+  --text:#e8eef8;
+  --muted:#8896ad;
+  --accent:#6d8bff;
+  --accent2:#a06bff;
+  --green:#31d0aa;
+  --red:#ff6b7a;
+  --yellow:#ffc857;
+  --blue:#4fc3f7;
+  --radius:16px;
+  --radius-sm:11px;
+  --shadow:0 18px 50px rgba(0,0,0,.45);
+}
+[data-theme="light"]{
+  --bg:#eef1f8;
+  --card:rgba(255,255,255,.78);
+  --card2:rgba(255,255,255,.95);
+  --card3:#ffffff;
+  --border:rgba(15,23,42,.10);
+  --border2:rgba(15,23,42,.18);
+  --text:#0f172a;
+  --muted:#5b6b83;
+  --accent:#4c63ff;
+  --accent2:#8b4dff;
+  --green:#0ea882;
+  --red:#e03b52;
+  --yellow:#c98a00;
+  --blue:#0288d1;
+  --shadow:0 18px 50px rgba(15,23,42,.14);
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;}
+[hidden]{display:none !important;}
+html,body{height:100%;}
+body{
+  margin:0;
+  font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';
+  position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:
+    radial-gradient(680px 460px at 6% -5%, rgba(109,139,255,.22), transparent 70%),
+    radial-gradient(760px 520px at 102% 12%, rgba(160,107,255,.18), transparent 70%),
+    radial-gradient(620px 480px at 50% 108%, rgba(49,208,170,.12), transparent 70%);
+}
+button{font-family:inherit;}
+::-webkit-scrollbar{width:9px;height:9px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px;}
+::-webkit-scrollbar-thumb:hover{background:var(--muted);}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.app{display:flex;min-height:100vh;}
+
+.sidebar{
+  width:264px;flex:0 0 264px;height:100vh;position:sticky;top:0;
+  display:flex;flex-direction:column;
+  padding:18px 14px;
+  background:var(--card);
+  border-right:1px solid var(--border);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  z-index:60;
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+}
+.brand{display:flex;align-items:center;gap:12px;padding:6px 8px 20px;}
+.brand-logo{
+  width:44px;height:44px;flex:none;border-radius:14px;
+  display:grid;place-items:center;font-size:23px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  box-shadow:0 10px 26px rgba(109,139,255,.38);
+}
+.brand-text{display:flex;flex-direction:column;line-height:1.15;min-width:0;}
+.brand-text strong{font-size:16px;letter-spacing:.6px;font-weight:800;}
+.brand-text span{font-size:9px;letter-spacing:2.2px;color:var(--muted);font-weight:700;}
+
+.nav{display:flex;flex-direction:column;gap:4px;flex:1;overflow-y:auto;padding-bottom:10px;}
+.nav-item{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 13px;border-radius:12px;border:1px solid transparent;
+  background:transparent;color:var(--muted);
+  font-size:13.5px;font-weight:600;text-align:left;cursor:pointer;
+  transition:background .18s,color .18s,border-color .18s,transform .18s;
+}
+.nav-item:hover{background:var(--card2);color:var(--text);}
+.nav-item:active{transform:scale(.985);}
+.nav-item.active{
+  background:linear-gradient(135deg, rgba(109,139,255,.20), rgba(160,107,255,.15));
+  color:var(--text);
+  border-color:rgba(109,139,255,.38);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.03);
+}
+.nav-item .ni{font-size:16px;width:20px;text-align:center;flex:none;}
+
+.sidebar-foot{padding-top:12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:10px;}
+.ver{margin:0;text-align:center;font-size:10px;letter-spacing:1.4px;color:var(--muted);font-weight:600;}
+
+.main{flex:1;min-width:0;display:flex;flex-direction:column;}
+
+.topbar{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 22px;
+  border-bottom:1px solid var(--border);
+  background:var(--card);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  position:sticky;top:0;z-index:40;
+}
+.page-title{font-size:17px;font-weight:800;margin:0;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.spacer{flex:1;}
+
+.user-chip{
+  display:flex;align-items:center;gap:9px;
+  padding:5px 13px 5px 5px;border-radius:99px;
+  background:var(--card2);border:1px solid var(--border);
+  font-size:12.5px;font-weight:600;max-width:200px;
+}
+.user-chip img{width:28px;height:28px;border-radius:50%;flex:none;background:var(--card3);}
+.user-chip span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.views{padding:22px;flex:1;max-width:1500px;width:100%;margin:0 auto;}
+.view{display:none;}
+.view.active{display:block;animation:fadeUp .35s cubic-bezier(.22,1,.36,1);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+/* ============================================================
+   COMPONENTS
+   ============================================================ */
+.btn{
+  border:1px solid var(--border);background:var(--card2);color:var(--text);
+  padding:9px 16px;border-radius:var(--radius-sm);
+  font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;
+  transition:transform .16s,border-color .16s,background .16s,box-shadow .16s;
+}
+.btn:hover{transform:translateY(-1px);border-color:var(--border2);}
+.btn:active{transform:translateY(0);}
+.btn.primary{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border-color:transparent;color:#fff;
+  box-shadow:0 8px 24px rgba(109,139,255,.32);
+}
+.btn.primary:hover{box-shadow:0 12px 30px rgba(109,139,255,.45);}
+.btn.ghost{background:transparent;}
+.btn.full{width:100%;}
+.btn.sm{padding:6px 11px;font-size:11.5px;border-radius:9px;}
+.btn.danger{color:var(--red);border-color:rgba(255,107,122,.35);}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+.icon-btn{
+  border:1px solid var(--border);background:var(--card2);color:var(--text);
+  width:38px;height:38px;border-radius:11px;cursor:pointer;font-size:15px;
+  display:grid;place-items:center;transition:.16s;flex:none;
+}
+.icon-btn:hover{border-color:var(--border2);transform:translateY(-1px);}
+.menu-btn{display:none;}
+
+.grid{display:grid;gap:16px;}
+.grid.c2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr));}
+.grid.c3{grid-template-columns:repeat(auto-fit,minmax(215px,1fr));}
+.grid.c4{grid-template-columns:repeat(auto-fit,minmax(175px,1fr));}
+
+.card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:18px;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  transition:border-color .2s,transform .2s;
+}
+.card:hover{border-color:var(--border2);}
+.card.pad0{padding:0;overflow:hidden;}
+
+.card-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.card-head h3{margin:0;font-size:14px;font-weight:700;letter-spacing:.2px;}
+.card-head .ico{font-size:16px;}
+.card-head .spacer{flex:1;}
+
+.stat{
+  display:flex;flex-direction:column;gap:6px;
+}
+.stat .label{font-size:11px;letter-spacing:1.1px;text-transform:uppercase;color:var(--muted);font-weight:700;}
+.stat .value{font-size:26px;font-weight:800;letter-spacing:-.5px;line-height:1.1;}
+.stat .sub{font-size:11.5px;color:var(--muted);}
+
+.bar{height:7px;border-radius:99px;background:var(--card3);overflow:hidden;margin-top:8px;}
+.bar > i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .6s cubic-bezier(.22,1,.36,1);}
+
+.profile-card{display:flex;align-items:center;gap:14px;}
+.profile-card img{width:58px;height:58px;border-radius:50%;flex:none;background:var(--card3);border:2px solid var(--border2);}
+.profile-card .pn{font-size:16px;font-weight:800;margin:0 0 3px;}
+.profile-card .pe{font-size:12px;color:var(--muted);margin:0;word-break:break-all;}
+
+.list{display:flex;flex-direction:column;gap:8px;}
+.row{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;border-radius:13px;
+  background:var(--card2);border:1px solid var(--border);
+  transition:.18s;cursor:default;
+}
+.row.clickable{cursor:pointer;}
+.row.clickable:hover{border-color:rgba(109,139,255,.5);transform:translateX(3px);}
+.row .rico{
+  width:38px;height:38px;flex:none;border-radius:11px;display:grid;place-items:center;
+  background:var(--card3);font-size:17px;
+}
+.row .rmain{flex:1;min-width:0;}
+.row .rtitle{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.row .rsub{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
+.row .rtime{font-size:11px;color:var(--muted);font-weight:600;flex:none;white-space:nowrap;}
+
+.badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 9px;border-radius:99px;font-size:10.5px;font-weight:700;
+  letter-spacing:.4px;background:var(--card3);color:var(--muted);
+  border:1px solid var(--border);
+}
+.badge.green{color:var(--green);border-color:rgba(49,208,170,.35);background:rgba(49,208,170,.10);}
+.badge.red{color:var(--red);border-color:rgba(255,107,122,.35);background:rgba(255,107,122,.10);}
+.badge.blue{color:var(--blue);border-color:rgba(79,195,247,.35);background:rgba(79,195,247,.10);}
+.badge.yellow{color:var(--yellow);border-color:rgba(255,200,87,.35);background:rgba(255,200,87,.10);}
+
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+
+input[type=text],input[type=search],input[type=email],input[type=datetime-local],textarea,select{
+  width:100%;padding:10px 13px;border-radius:var(--radius-sm);
+  background:var(--card2);border:1px solid var(--border);color:var(--text);
+  font-family:inherit;font-size:13px;outline:none;transition:.18s;
+}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(109,139,255,.15);}
+input::placeholder,textarea::placeholder{color:var(--muted);}
+textarea{resize:vertical;min-height:110px;line-height:1.55;}
+label.fl{display:block;font-size:11px;letter-spacing:.9px;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 6px;}
+.field{margin-bottom:13px;}
+.search-wrap{position:relative;flex:1;min-width:180px;}
+.search-wrap input{padding-left:34px;}
+.search-wrap::before{content:'🔍';position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:12px;opacity:.6;pointer-events:none;}
+
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+th,td{padding:10px 13px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
+th{font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:700;background:var(--card2);position:sticky;top:0;}
+tbody tr:hover{background:var(--card2);}
+.table-wrap{overflow:auto;max-height:520px;border-radius:var(--radius);border:1px solid var(--border);}
+
+.empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:10px;padding:60px 24px;text-align:center;color:var(--muted);
+}
+.empty .empty-ico{font-size:42px;opacity:.85;}
+.empty h3{margin:0;font-size:15px;color:var(--text);font-weight:700;}
+.empty p{margin:0;font-size:13px;max-width:340px;line-height:1.55;}
+
+.loading-inline{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  padding:70px 20px;color:var(--muted);font-size:13px;font-weight:600;
+}
+.spinner{
+  width:34px;height:34px;border-radius:50%;
+  border:3px solid var(--border2);border-top-color:var(--accent);
+  animation:spin .8s linear infinite;
+}
+.spinner.sm{width:18px;height:18px;border-width:2px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.skeleton{
+  background:linear-gradient(90deg,var(--card2) 25%,var(--card3) 50%,var(--card2) 75%);
+  background-size:200% 100%;animation:shimmer 1.4s infinite;
+  border-radius:10px;height:16px;
+}
+@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+
+/* ---------- Loader overlay ---------- */
+.loader{
+  position:fixed;inset:0;z-index:200;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+  background:rgba(8,11,18,.72);backdrop-filter:blur(8px);
+  color:#fff;font-size:13.5px;font-weight:600;
+}
+[data-theme="light"] .loader{background:rgba(238,241,248,.78);color:var(--text);}
+
+/* ---------- Toasts ---------- */
+.toasts{position:fixed;right:18px;bottom:18px;z-index:300;display:flex;flex-direction:column;gap:10px;pointer-events:none;}
+.toast{
+  pointer-events:auto;
+  display:flex;align-items:center;gap:10px;
+  padding:12px 16px;border-radius:13px;min-width:220px;max-width:360px;
+  background:var(--card3);border:1px solid var(--border2);
+  box-shadow:var(--shadow);font-size:12.5px;font-weight:600;color:var(--text);
+  animation:toastIn .32s cubic-bezier(.22,1,.36,1);
+  backdrop-filter:blur(18px);
+}
+.toast.out{animation:toastOut .3s forwards;}
+.toast.success{border-left:3px solid var(--green);}
+.toast.error{border-left:3px solid var(--red);}
+.toast.info{border-left:3px solid var(--accent);}
+@keyframes toastIn{from{opacity:0;transform:translateX(40px) scale(.96);}to{opacity:1;transform:none;}}
+@keyframes toastOut{to{opacity:0;transform:translateX(40px) scale(.96);}}
+
+/* ---------- Modal ---------- */
+.modal{
+  position:fixed;inset:0;z-index:250;
+  display:flex;align-items:center;justify-content:center;padding:18px;
+  background:rgba(4,7,12,.66);backdrop-filter:blur(6px);
+  animation:fadeUp .2s ease;
+}
+.modal-box{
+  width:100%;max-width:640px;max-height:88vh;display:flex;flex-direction:column;
+  background:var(--bg);border:1px solid var(--border2);border-radius:20px;
+  box-shadow:var(--shadow);overflow:hidden;
+  animation:popIn .28s cubic-bezier(.22,1,.36,1);
+}
+[data-theme="light"] .modal-box{background:#fff;}
+@keyframes popIn{from{opacity:0;transform:scale(.95) translateY(12px);}to{opacity:1;transform:none;}}
+.modal-head{
+  display:flex;align-items:center;gap:12px;padding:16px 18px;
+  border-bottom:1px solid var(--border);flex:none;
+}
+.modal-head h3{margin:0;font-size:14.5px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.modal-body{padding:18px;overflow:auto;flex:1;font-size:13.5px;line-height:1.65;}
+.modal-body pre{white-space:pre-wrap;word-break:break-word;font-family:inherit;margin:0;}
+.modal-foot{padding:14px 18px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;flex:none;}
+.modal-body iframe{width:100%;height:420px;border:1px solid var(--border);border-radius:12px;background:#fff;}
+
+.backdrop{
+  position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:55;
+  backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.backdrop.show{opacity:1;pointer-events:auto;}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 980px){
+  .sidebar{position:fixed;left:0;top:0;transform:translateX(-100%);box-shadow:var(--shadow);}
+  .sidebar.open{transform:translateX(0);}
+  .menu-btn{display:grid;}
+  .views{padding:16px;}
+  .topbar{padding:12px 14px;}
+  .user-chip{max-width:130px;}
+}
+@media (max-width: 560px){
+  .page-title{font-size:15px;}
+  .user-chip span{display:none;}
+  .user-chip{padding:4px;}
+  .views{padding:12px;}
+  .card{padding:15px;}
+  .stat .value{font-size:22px;}
+  .toasts{left:12px;right:12px;bottom:12px;}
+  .toast{max-width:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-logo">⚡</div>
+      <div class="brand-text">
+        <strong>TRIKKU</strong>
+        <span>SUPER DASHBOARD</span>
+      </div>
+    </div>
+
+    <nav class="nav" id="nav">
+      <button class="nav-item active" data-view="dashboard"><span class="ni">🏠</span><span>Dashboard</span></button>
+      <button class="nav-item" data-view="calendar"><span class="ni">📅</span><span>Calendar</span></button>
+      <button class="nav-item" data-view="gmail"><span class="ni">✉️</span><span>Gmail</span></button>
+      <button class="nav-item" data-view="drive"><span class="ni">🗂️</span><span>Drive</span></button>
+      <button class="nav-item" data-view="sheets"><span class="ni">📊</span><span>Sheets</span></button>
+      <button class="nav-item" data-view="blogger"><span class="ni">📝</span><span>Blogger</span></button>
+      <button class="nav-item" data-view="youtube"><span class="ni">▶️</span><span>YouTube</span></button>
+    </nav>
+
+    <div class="sidebar-foot">
+      <button class="btn ghost full" id="themeBtn">🌙 Switch theme</button>
+      <p class="ver">TRIKKU v1.0.0</p>
+    </div>
+  </aside>
+
+  <div class="backdrop" id="backdrop"></div>
+
+  <!-- ================= MAIN ================= -->
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+      <h1 class="page-title" id="pageTitle">Dashboard</h1>
+      <div class="spacer"></div>
+
+      <div class="user-chip" id="userChip" hidden>
+        <img id="userAvatar" alt="avatar" />
+        <span id="userName"></span>
+      </div>
+
+      <button class="btn primary" id="signInBtn">Sign in</button>
+      <button class="btn ghost" id="signOutBtn" hidden>Sign out</button>
+    </header>
+
+    <div class="views">
+      <section class="view active" id="view-dashboard"></section>
+      <section class="view" id="view-calendar"></section>
+      <section class="view" id="view-gmail"></section>
+      <section class="view" id="view-drive"></section>
+      <section class="view" id="view-sheets"></section>
+      <section class="view" id="view-blogger"></section>
+      <section class="view" id="view-youtube"></section>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL ================= -->
+<div class="modal" id="modal" hidden>
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="modalTitle"></h3>
+      <button class="icon-btn" id="modalClose" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+
+<!-- ================= TOASTS ================= -->
+<div class="toasts" id="toasts"></div>
+
+<!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<script>
+(function () {
+'use strict';
+
+/* ============================================================
+   ⚙️  CONFIG  —  YAHAN APNI DETAILS BHAREIN
+   ============================================================
+   CLIENT_ID : Google Cloud Console → APIs & Services → Credentials
+               → OAuth 2.0 Client ID (Web application)
+   API_KEY   : (optional) same jagah se API Key
+
+   ⚠️ IMPORTANT: Google Cloud Console me apne OAuth Client ID ke
+   "Authorised JavaScript origins" me apna GitHub Pages URL add karein,
+   jaise:  https://username.github.io
+   ============================================================ */
+const CONFIG = {
+  CLIENT_ID: '',   // <-- apna OAuth Client ID yahan paste karein
+  API_KEY:   '',   // <-- apna API key yahan paste karein (optional)
+
+  SCOPES: [
+    'https://www.googleapis.com/auth/calendar',
+    'https://www.googleapis.com/auth/spreadsheets',
+    'https://www.googleapis.com/auth/blogger',
+    'https://www.googleapis.com/auth/drive',
+    'https://www.googleapis.com/auth/gmail.modify',
+    'https://www.googleapis.com/auth/youtube.readonly',
+    'https://www.googleapis.com/auth/userinfo.profile',
+    'https://www.googleapis.com/auth/userinfo.email'
+  ]
+};
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+const $  = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => (
+  { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]
+));
+
+function fmtBytes(bytes) {
+  const n = Number(bytes);
+  if (!n || isNaN(n)) return '0 B';
+  const u = ['B','KB','MB','GB','TB'];
+  const i = Math.floor(Math.log(n) / Math.log(1024));
+  return (n / Math.pow(1024, i)).toFixed(i === 0 ? 0 : 1) + ' ' + u[i];
+}
+
+function fmtDate(d) {
+  if (!d) return '';
+  try {
+    return new Date(d).toLocaleString(undefined, {
+      day: '2-digit', month: 'short', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  } catch (e) { return String(d); }
+}
+
+function fmtDay(d) {
+  if (!d) return '';
+  try {
+    return new Date(d).toLocaleDateString(undefined, { day: '2-digit', month: 'short' });
+  } catch (e) { return ''; }
+}
+
+function fmtTime(d) {
+  if (!d) return '';
+  try {
+    return new Date(d).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+  } catch (e) { return ''; }
+}
+
+function relTime(d) {
+  if (!d) return '';
+  const diff = Date.now() - new Date(d).getTime();
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return m + 'm ago';
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + 'h ago';
+  const days = Math.floor(h / 24);
+  if (days < 30) return days + 'd ago';
+  return fmtDay(d);
+}
+
+function b64urlEncode(str) {
+  return btoa(unescape(encodeURIComponent(str)))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function b64urlDecode(data) {
+  if (!data) return '';
+  let s = String(data).replace(/-/g, '+').replace(/_/g, '/');
+  while (s.length % 4) s += '=';
+  try {
+    return decodeURIComponent(escape(atob(s)));
+  } catch (e) {
+    try { return atob(s); } catch (e2) { return ''; }
+  }
+}
+
+function fileIcon(mime) {
+  mime = mime || '';
+  if (mime.indexOf('folder') > -1) return '📁';
+  if (mime.indexOf('spreadsheet') > -1) return '📊';
+  if (mime.indexOf('document') > -1) return '📄';
+  if (mime.indexOf('presentation') > -1) return '📽️';
+  if (mime.indexOf('pdf') > -1) return '📕';
+  if (mime.indexOf('image') > -1) return '🖼️';
+  if (mime.indexOf('video') > -1) return '🎬';
+  if (mime.indexOf('audio') > -1) return '🎵';
+  if (mime.indexOf('zip') > -1 || mime.indexOf('compressed') > -1) return '🗜️';
+  if (mime.indexOf('form') > -1) return '📋';
+  return '📎';
+}
+
+/* ============================================================
+   TOASTS
+   ============================================================ */
+function toast(msg, type) {
+  type = type || 'info';
+  const icons = { success: '✅', error: '⚠️', info: 'ℹ️' };
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.innerHTML = '<span>' + (icons[type] || '') + '</span><span>' + esc(msg) + '</span>';
+  $('#toasts').appendChild(el);
+  setTimeout(function () {
+    el.classList.add('out');
+    setTimeout(function () { el.remove(); }, 320);
+  }, 4200);
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+function openModal(title, bodyHtml, footHtml) {
+  $('#modalTitle').textContent = title || '';
+  $('#modalBody').innerHTML = bodyHtml || '';
+  $('#modalFoot').innerHTML = footHtml || '';
+  $('#modal').hidden = false;
+}
+function closeModal() {
+  $('#modal').hidden = true;
+  $('#modalBody').innerHTML = '';
+  $('#modalFoot').innerHTML = '';
+}
+$('#modalClose').addEventListener('click', closeModal);
+$('#modal').addEventListener('click', function (e) {
+  if (e.target === $('#modal')) closeModal();
+});
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape' && !$('#modal').hidden) closeModal();
+});
+
+/* ============================================================
+   AUTH  (Google Identity Services — implicit token flow)
+   ============================================================ */
+let accessToken  = null;
+let tokenClient  = null;
+let tokenWaiter  = null;
+let currentUser  = null;
+let currentView  = 'dashboard';
+let gsiReady     = false;
+
+function initGoogle() {
+  if (gsiReady) return true;
+  if (!window.google || !window.google.accounts || !window.google.accounts.oauth2) return false;
+  if (!CONFIG.CLIENT_ID) return false;
+
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CONFIG.CLIENT_ID,
+    scope: CONFIG.SCOPES.join(' '),
+    include_granted_scopes: true,
+    callback: function (resp) {
+      if (resp && resp.error) {
+        if (tokenWaiter) {
+          const w = tokenWaiter; tokenWaiter = null;
+          w.reject(new Error(resp.error));
+        } else {
+          toast('Sign-in failed: ' + resp.error, 'error');
+        }
+        return;
+      }
+      accessToken = resp.access_token;
+      const w = tokenWaiter;
+      tokenWaiter = null;
+      if (w) w.resolve();
+      else onSignedIn();
+    }
+  });
+
+  gsiReady = true;
+  return true;
+}
+
+function requestToken(interactive) {
+  return new Promise(function (resolve, reject) {
+    if (!tokenClient) { reject(new Error('Auth not ready')); return; }
+    tokenWaiter = { resolve: resolve, reject: reject };
+    try {
+      tokenClient.requestAccessToken({ prompt: interactive ? 'consent' : '' });
+    } catch (e) {
+      tokenWaiter = null;
+      reject(e);
+    }
+  });
+}
+
+async function ensureToken() {
+  if (accessToken) return accessToken;
+  await requestToken(false);
+  if (!accessToken) throw new Error('Not authenticated');
+  return accessToken;
+}
+
+/* ---------- Universal API fetch with auto-refresh ---------- */
+async function api(url, options, isRetry) {
+  await ensureToken();
+  const opts = Object.assign({}, options || {});
+  opts.headers = Object.assign({}, opts.headers || {}, {
+    Authorization: 'Bearer ' + accessToken
+  });
+
+  const res = await fetch(url, opts);
+
+  if (res.status === 401 && !isRetry) {
+    accessToken = null;
+    try {
+      await requestToken(false);
+    } catch (e) {
+      accessToken = null;
+      throw new Error('Session expired — please sign in again.');
+    }
+    return api(url, options, true);
+  }
+
+  if (!res.ok) {
+    const text = await res.text().catch(function () { return ''; });
+    let detail = text.slice(0, 260);
+    try {
+      const j = JSON.parse(text);
+      if (j && j.error && j.error.message) detail = j.error.message;
+    } catch (e) { /* ignore */ }
+    throw new Error(res.status + ' — ' + (detail || res.statusText));
+  }
+
+  if (res.status === 204) return null;
+
+  const ct = res.headers.get('content-type') || '';
+  return ct.indexOf('application/json') > -1 ? res.json() : res.text();
+}
+
+/* ---------- Sign in / out ---------- */
+async function onSignedIn() {
+  $('#signInBtn').hidden = true;
+  $('#signOutBtn').hidden = false;
+
+  try {
+    const p = await api('https://www.googleapis.com/oauth2/v3/userinfo');
+    currentUser = p;
+    $('#userChip').hidden = false;
+    $('#userAvatar').src = p.picture || '';
+    $('#userName').textContent = p.given_name || p.name || p.email || 'User';
+  } catch (e) {
+    /* profile optional */
+  }
+
+  toast('Signed in successfully', 'success');
+  go(currentView);
+}
+
+$('#signInBtn').addEventListener('click', async function () {
+  if (!CONFIG.CLIENT_ID) {
+    toast('Setup incomplete — CLIENT_ID missing in code.', 'error');
+    return;
+  }
+  if (!initGoogle()) {
+    toast('Google library still loading, try again…', 'info');
+    return;
+  }
+  try {
+    await requestToken(true);
+  } catch (e) {
+    toast('Sign-in cancelled or failed.', 'error');
+  }
+});
+
+$('#signOutBtn').addEventListener('click', function () {
+  if (accessToken && window.google && google.accounts && google.accounts.oauth2) {
+    try { google.accounts.oauth2.revoke(accessToken, function () {}); } catch (e) {}
+  }
+  accessToken = null;
+  currentUser = null;
+  $('#userChip').hidden = true;
+  $('#signInBtn').hidden = false;
+  $('#signOutBtn').hidden = true;
+  toast('Signed out');
+  go(currentView);
+});
+
+/* ============================================================
+   THEME
+   ============================================================ */
+(function initTheme() {
+  const saved = localStorage.getItem('trikku-theme');
+  if (saved) document.documentElement.setAttribute('data-theme', saved);
+  updateThemeBtn();
+})();
+
+function updateThemeBtn() {
+  const t = document.documentElement.getAttribute('data-theme');
+  $('#themeBtn').textContent = t === 'dark' ? '☀️ Light theme' : '🌙 Dark theme';
+}
+
+$('#themeBtn').addEventListener('click', function () {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('trikku-theme', next);
+  updateThemeBtn();
+});
+
+/* ============================================================
+   SIDEBAR / NAV
+   ============================================================ */
+$('#menuBtn').addEventListener('click', function () {
+  $('#sidebar').classList.toggle('open');
+  $('#backdrop').classList.toggle('show');
+});
+$('#backdrop').addEventListener('click', function () {
+  $('#sidebar').classList.remove('open');
+  $('#backdrop').classList.remove('show');
+});
+
+$('#nav').addEventListener('click', function (e) {
+  const btn = e.target.closest('.nav-item');
+  if (!btn) return;
+  $('#sidebar').classList.remove('open');
+  $('#backdrop').classList.remove('show');
+  go(btn.dataset.view);
+});
+
+/* ============================================================
+   ROUTER
+   ============================================================ */
+const VIEWS = {
+  dashboard: { title: 'Dashboard', render: renderDashboard },
+  calendar:  { title: 'Calendar',  render: renderCalendar  },
+  gmail:     { title: 'Gmail',     render: renderGmail     },
+  drive:     { title: 'Drive',     render: renderDrive     },
+  sheets:    { title: 'Sheets',    render: renderSheets    },
+  blogger:   { title: 'Blogger',   render: renderBlogger   },
+  youtube:   { title: 'YouTube',   render: renderYouTube   }
+};
+
+async function go(view) {
+  if (!VIEWS[view]) view = 'dashboard';
+  currentView = view;
+
+  $$('.nav-item').forEach(function (b) {
+    b.classList.toggle('active', b.dataset.view === view);
+  });
+  $$('.view').forEach(function (v) {
+    v.classList.toggle('active', v.id === 'view-' + view);
+  });
+
+  const meta = VIEWS[view];
+  $('#pageTitle').textContent = meta.title;
+
+  const section = $('#view-' + view);
+
+  if (!accessToken) {
+    section.innerHTML = signInPlaceholder(meta.title);
+    return;
+  }
+
+  section.innerHTML =
+    '<div class="loading-inline"><div class="spinner sm"></div><span>Loading ' +
+    esc(meta.title) + '…</span></div>';
+
+  try {
+    await meta.render(section);
+  } catch (err) {
+    section.innerHTML =
+      '<div class="empty">' +
+        '<div class="empty-ico">⚠️</div>' +
+        '<h3>Could not load ' + esc(meta.title) + '</h3>' +
+        '<p>' + esc(err.message || 'Unknown error') + '</p>' +
+        '<button class="btn" id="retryBtn">Retry</button>' +
+      '</div>';
+    const rb = $('#retryBtn', section);
+    if (rb) rb.addEventListener('click', function () { go(view); });
+  }
+}
+
+function signInPlaceholder(title) {
+  return (
+    '<div class="empty">' +
+      '<div class="empty-ico">🔐</div>' +
+      '<h3>Sign in required</h3>' +
+      '<p>Connect your Google account to load ' + esc(title) + ' data into the dashboard.</p>' +
+      '<button class="btn primary" id="inlineSignIn">Sign in with Google</button>' +
+    '</div>'
+  );
+}
+
+document.addEventListener('click', function (e) {
+  if (e.target && e.target.id === 'inlineSignIn') $('#signInBtn').click();
+});
+
+/* ============================================================
+   VIEW: DASHBOARD
+   ============================================================ */
+async function renderDashboard(root) {
+  const nowIso = new Date().toISOString();
+
+  const results = await Promise.allSettled([
+    api('https://www.googleapis.com/oauth2/v3/userinfo'),
+    api('https://www.googleapis.com/drive/v3/about?fields=storageQuota,user'),
+    api('https://gmail.googleapis.com/gmail/v1/users/me/messages?q=is%3Aunread&maxResults=1'),
+    api('https://www.googleapis.com/calendar/v3/calendars/primary/events?' +
+        'timeMin=' + encodeURIComponent(nowIso) +
+        '&maxResults=5&singleEvents=true&orderBy=startTime'),
+    api('https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&mine=true')
+  ]);
+
+  const profile = results[0].status === 'fulfilled' ? results[0].value : null;
+  const about   = results[1].status === 'fulfilled' ? results[1].value : null;
+  const unread  = results[2].status === 'fulfilled' ? results[2].value : null;
+  const events  = results[3].status === 'fulfilled' ? results[3].value : null;
+  const yt      = results[4].status === 'fulfilled' ? results[4].value : null;
+
+  if (profile) {
+    currentUser = profile;
+    $('#userChip').hidden = false;
+    $('#userAvatar').src = profile.picture || '';
+    $('#userName').textContent = profile.given_name || profile.name || profile.email || 'User';
+  }
+
+  /* ----- storage ----- */
+  let storageUsed = 0, storageTotal = 0, storagePct = 0;
+  if (about && about.storageQuota) {
+    storageUsed  = Number(about.storageQuota.usage || 0);
+    storageTotal = Number(about.storageQuota.limit || 0);
+    storagePct   = storageTotal ? Math.min(100, (storageUsed / storageTotal) * 100) : 0;
+  }
+
+  /* ----- unread ----- */
+  const unreadCount = unread ? (unread.resultSizeEstimate || 0) : 0;
+
+  /* ----- events ----- */
+  const eventList = (events && events.items) ? events.items : [];
+
+  /* ----- youtube ----- */
+  let ytChannel = null;
+  if (yt && yt.items && yt.items.length) ytChannel = yt.items[0];
+
+  const html = [
+    '<div class="grid c2" style="margin-bottom:16px">',
+
+      /* Profile */
+      '<div class="card">',
+        '<div class="profile-card">',
+          '<img src="' + esc((profile && profile.picture) || '') + '" alt="" onerror="this.style.visibility=\'hidden\'">',
+          '<div style="min-width:0">',
+            '<p class="pn">' + esc((profile && (profile.name || profile.given_name)) || 'Google User') + '</p>',
+            '<p class="pe">' + esc((profile && profile.email) || '—') + '</p>',
+          '</div>',
+        '</div>',
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px">',
+          '<span class="badge green">● Connected</span>',
+          '<span class="badge blue">' + CONFIG.SCOPES.length + ' scopes</span>',
+        '</div>',
+      '</div>',
+
+      /* Storage */
+      '<div class="card">',
+        '<div class="card-head"><span class="ico">🗄️</span><h3>Drive Storage</h3></div>',
+        '<div class="stat">',
+          '<span class="value">' + fmtBytes(storageUsed) + '</span>',
+          '<span class="sub">of ' + (storageTotal ? fmtBytes(storageTotal) : 'unlimited') + ' used</span>',
+        '</div>',
+        '<div class="bar"><i style="width:' + storagePct.toFixed(1) + '%"></i></div>',
+        '<div class="sub" style="font-size:11.5px;color:var(--muted);margin-top:8px">' +
+          storagePct.toFixed(1) + '% of your quota</div>',
+      '</div>',
+
+      /* Quick stats */
+      '<div class="card">',
+        '<div class="card-head"><span class="ico">📬</span><h3>Unread Mail</h3></div>',
+        '<div class="stat">',
+          '<span class="value">' + unreadCount + '</span>',
+          '<span class="sub">messages in inbox</span>',
+        '</div>',
+        '<button class="btn sm" style="margin-top:14px" data-goto="gmail">Open Gmail →</button>',
+      '</div>',
+
+      /* YouTube */
+      '<div class="card">',
+        '<div class="card-head"><span class="ico">▶️</span><h3>YouTube Channel</h3></div>',
+        ytChannel
+          ? '<div class="stat">' +
+              '<span class="value">' + Number(ytChannel.statistics.subscriberCount || 0).toLocaleString() + '</span>' +
+              '<span class="sub">' + esc(ytChannel.snippet.title || '') + '</span>' +
+            '</div>' +
+            '<div style="display:flex;gap:14px;margin-top:12px;font-size:12px;color:var(--muted)">' +
+              '<span>👁️ ' + Number(ytChannel.statistics.viewCount || 0).toLocaleString() + ' views</span>' +
+              '<span>🎬 ' + Number(ytChannel.statistics.videoCount || 0).toLocaleString() + ' videos</span>' +
+            '</div>'
+          : '<div class="sub" style="color:var(--muted);font-size:12.5px">No channel found for this account.</div>',
+      '</div>',
+
+    '</div>',
+
+    /* Upcoming events */
+    '<div class="card">',
+      '<div class="card-head"><span class="ico">📅</span><h3>Upcoming Events</h3><div class="spacer"></div>' +
+      '<button class="btn sm" data-goto="calendar">View all →</button></div>',
+      eventList.length
+        ? '<div class="list">' + eventList.map(function (ev) {
+            const s = ev.start && (ev.start.dateTime || ev.start.date);
+            const isAllDay = ev.start && !!ev.start.date && !ev.start.dateTime;
+            return (
+              '<div class="row">' +
+                '<div class="rico">' + (isAllDay ? '📌' : '⏰') + '</div>' +
+                '<div class="rmain">' +
+                  '<div class="rtitle">' + esc(ev.summary || '(No title)') + '</div>' +
+                  '<div class="rsub">' + (isAllDay ? 'All day' : fmtTime(s)) +
+                    (ev.location ? ' · ' + esc(ev.location) : '') + '</div>' +
+                '</div>' +
+                '<div class="rtime">' + esc(fmtDay(s)) + '</div>' +
+              '</div>'
+            );
+          }).join('') + '</div>'
+        : '<div class="empty" style="padding:34px 12px"><div class="empty-ico">🌤️</div><h3>No upcoming events</h3><p>Your calendar is clear.</p></div>',
+    '</div>'
+  ].join('');
+
+  root.innerHTML = html;
+
+  root.querySelectorAll('[data-goto]').forEach(function (b) {
+    b.addEventListener('click', function () { go(b.dataset.goto); });
+  });
+}
+
+/* ============================================================
+   VIEW: CALENDAR
+   ============================================================ */
+async function renderCalendar(root) {
+  const nowIso = new Date().toISOString();
+  const url = 'https://www.googleapis.com/calendar/v3/calendars/primary/events?' +
+    'timeMin=' + encodeURIComponent(nowIso) +
+    '&maxResults=25&singleEvents=true&orderBy=startTime';
+  const data = await api(url);
+  const items = (data && data.items) ? data.items : [];
+
+  root.innerHTML = [
+    '<div class="toolbar">',
+      '<button class="btn primary" id="newEventBtn">＋ New Event</button>',
+      '<div class="spacer"></div>',
+      '<button class="btn" id="refreshCal">⟳ Refresh</button>',
+    '</div>',
+    '<div class="card pad0">',
+      items.length
+        ? '<div class="list" style="padding:14px">' + items.map(function (ev) {
+            const s = ev.start && (ev.start.dateTime || ev.start.date);
+            const e = ev.end && (ev.end.dateTime || ev.end.date);
+            const isAllDay = ev.start && !!ev.start.date && !ev.start.dateTime;
+            return (
+              '<div class="row">' +
+                '<div class="rico">' + (isAllDay ? '📌' : '⏰') + '</div>' +
+                '<div class="rmain">' +
+                  '<div class="rtitle">' + esc(ev.summary || '(No title)') + '</div>' +
+                  '<div class="rsub">' +
+                    esc(isAllDay ? 'All day' : (fmtDate(s) + (e ? ' → ' + fmtTime(e) : ''))) +
+                    (ev.location ? ' · 📍 ' + esc(ev.location) : '') +
+                  '</div>' +
+                '</div>' +
+                (ev.htmlLink
+                  ? '<a class="btn sm" href="' + esc(ev.htmlLink) + '" target="_blank" rel="noopener">Open</a>'
+                  : '') +
+              '</div>'
+            );
+          }).join('') + '</div>'
+        : '<div class="empty"><div class="empty-ico">📭</div><h3>No upcoming events</h3><p>Create one to get started.</p></div>',
+    '</div>'
+  ].join('');
+
+  $('#refreshCal', root).addEventListener('click', function () { go('calendar'); });
+  $('#newEventBtn', root).addEventListener('click', function () { openEventModal(); });
+}
+
+function openEventModal() {
+  const now = new Date();
+  now.setMinutes(now.getMinutes() - now.getTimezoneOffset() + 60);
+  const def = now.toISOString().slice(0, 16);
+
+  openModal(
+    'Create Calendar Event',
+    '<div class="field"><label class="fl">Title</label>' +
+      '<input type="text" id="evTitle" placeholder="Meeting with team" /></div>' +
+    '<div class="field"><label class="fl">Start</label>' +
+      '<input type="datetime-local" id="evStart" value="' + def + '" /></div>' +
+    '<div class="field"><label class="fl">End</label>' +
+      '<input type="datetime-local" id="evEnd" value="' + def + '" /></div>' +
+    '<div class="field"><label class="fl">Location (optional)</label>' +
+      '<input type="text" id="evLoc" placeholder="Zoom / Office" /></div>' +
+    '<div class="field"><label class="fl">Description (optional)</label>' +
+      '<textarea id="evDesc" placeholder="Notes…"></textarea></div>',
+    '<button class="btn ghost" id="evCancel">Cancel</button>' +
+    '<button class="btn primary" id="evSave">Create Event</button>'
+  );
+
+  $('#evCancel').addEventListener('click', closeModal);
+  $('#evSave').addEventListener('click', async function () {
+    const title = $('#evTitle').value.trim();
+    const start = $('#evStart').value;
+    const end   = $('#evEnd').value;
+    const loc   = $('#evLoc').value.trim();
+    const desc  = $('#evDesc').value.trim();
+
+    if (!title) { toast('Title is required', 'error'); return; }
+    if (!start || !end) { toast('Start & End time required', 'error'); return; }
+
+    const btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Creating…';
+
+    try {
+      const body = {
+        summary: title,
+        location: loc || undefined,
+        description: desc || undefined,
+        start: { dateTime: new Date(start).toISOString() },
+        end:   { dateTime: new Date(end).toISOString() }
+      };
+      await api('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      closeModal();
+      toast('Event created', 'success');
+      go('calendar');
+    } catch (e) {
+      toast('Failed: ' + e.message, 'error');
+      btn.disabled = false;
+      btn.textContent = 'Create Event';
+    }
+  });
+}
+
+/* ============================================================
+   VIEW: GMAIL
+   ============================================================ */
+let gmailQuery = 'in:inbox';
+
+async function renderGmail(root) {
+  root.innerHTML =
+    '<div class="toolbar">' +
+      '<div class="search-wrap"><input type="search" id="gmailSearch" placeholder="Search mail…" value="' + esc(gmailQuery) + '" /></div>' +
+      '<button class="btn" id="gmailRefresh">⟳</button>' +
+      '<button class="btn primary" id="gmailCompose">✏️ Compose</button>' +
+    '</div>' +
+    '<div class="card pad0" id="gmailList">' +
+      '<div class="loading-inline"><div class="spinner sm"></div><span>Fetching messages…</span></div>' +
+    '</div>';
+
+  $('#gmailRefresh', root).addEventListener('click', function () { go('gmail'); });
+  $('#gmailCompose', root).addEventListener('click', openComposeModal);
+  $('#gmailSearch', root).addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      gmailQuery = this.value.trim() || 'in:inbox';
+      go('gmail');
+    }
+  });
+
+  const list = await api(
+    'https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=15&q=' +
+    encodeURIComponent(gmailQuery)
+  );
+
+  const box = $('#gmailList', root);
+
+  if (!list || !list.messages || !list.messages.length) {
+    box.innerHTML = '<div class="empty"><div class="empty-ico">📭</div><h3>No messages</h3><p>Nothing matched your search.</p></div>';
+    return;
+  }
+
+  const details = await Promise.all(
+    list.messages.map(function (m) {
+      return api('https://gmail.googleapis.com/gmail/v1/users/me/messages/' + m.id +
+        '?format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=Date')
+        .catch(function () { return null; });
+    })
+  );
+
+  const rows = details.filter(Boolean).map(function (msg) {
+    const headers = (msg.payload && msg.payload.headers) || [];
+    const get = function (n) {
+      const h = headers.find(function (x) { return x.name.toLowerCase() === n.toLowerCase(); });
+      return h ? h.value : '';
+    };
+    const subject = get('Subject') || '(no subject)';
+    const from = get('From') || '';
+    const date = get('Date') || '';
+    const unread = (msg.labelIds || []).indexOf('UNREAD') > -1;
+
+    return (
+      '<div class="row clickable" data-msg="' + esc(msg.id) + '">' +
+        '<div class="rico">' + (unread ? '📩' : '📧') + '</div>' +
+        '<div class="rmain">' +
+          '<div class="rtitle"' + (unread ? ' style="font-weight:800"' : '') + '>' + esc(subject) + '</div>' +
+          '<div class="rsub">' + esc(from) + '</div>' +
+        '</div>' +
+        '<div class="rtime">' + esc(date ? relTime(date) : '') + '</div>' +
+      '</div>'
+    );
+  }).join('');
+
+  box.innerHTML = '<div class="list" style="padding:14px">' + rows + '</div>';
+
+  box.querySelectorAll('[data-msg]').forEach(function (el) {
+    el.addEventListener('click', function () { openMessage(el.dataset.msg); });
+  });
+}
+
+function extractBody(payload) {
+  if (!payload) return '';
+  if (payload.body && payload.body.data) {
+    const decoded = b64urlDecode(payload.body.data);
+    if (payload.mimeType === 'text/html') return decoded;
+    return '<pre>' + esc(decoded) + '</pre>';
+  }
+  if (payload.parts && payload.parts.length) {
+    const htmlPart = payload.parts.find(function (p) { return p.mimeType === 'text/html'; });
+    if (htmlPart) {
+      const r = extractBody(htmlPart);
+      if (r) return r;
+    }
+    const textPart = payload.parts.find(function (p) { return p.mimeType === 'text/plain'; });
+    if (textPart) {
+      const r = extractBody(textPart);
+      if (r) return r;
+    }
+    for (let i = 0; i < payload.parts.length; i++) {
+      const r = extractBody(payload.parts[i]);
+      if (r) return r;
+    }
+  }
+  return '';
+}
+
+async function openMessage(id) {
+  openModal('Loading…', '<div class="loading-inline"><div class="spinner sm"></div><span>Fetching…</span></div>', '');
+  try {
+    const msg = await api('https://gmail.googleapis.com/gmail/v1/users/me/messages/' + id + '?format=full');
+    const headers = (msg.payload && msg.payload.headers) || [];
+    const get = function (n) {
+      const h = headers.find(function (x) { return x.name.toLowerCase() === n.toLowerCase(); });
+      return h ? h.value : '';
+    };
+
+    const subject = get('Subject') || '(no subject)';
+    const from = get('From') || '';
+    const to = get('To') || '';
+    const date = get('Date') || '';
+    const bodyHtml = extractBody(msg.payload) || '<p style="color:var(--muted)">No readable content.</p>';
+
+    openModal(
+      subject,
+      '<div style="margin-bottom:14px;font-size:12px;color:var(--muted);line-height:1.8">' +
+        '<div><strong style="color:var(--text)">From:</strong> ' + esc(from) + '</div>' +
+        (to ? '<div><strong style="color:var(--text)">To:</strong> ' + esc(to) + '</div>' : '') +
+        '<div><strong style="color:var(--text)">Date:</strong> ' + esc(date ? fmtDate(date) : '') + '</div>' +
+      '</div>' +
+      '<div style="border-top:1px solid var(--border);padding-top:14px">' + bodyHtml + '</div>',
+      '<a class="btn ghost" href="https://mail.google.com/mail/u/0/#inbox/' + esc(id) +
+        '" target="_blank" rel="noopener">Open in Gmail</a>' +
+      '<button class="btn primary" id="mReply">Reply</button>'
+    );
+
+    const rb = $('#mReply');
+    if (rb) {
+      rb.addEventListener('click', function () {
+        const emailMatch = from.match(/<([^>]+)>/);
+        const addr = emailMatch ? emailMatch[1] : from;
+        closeModal();
+        openComposeModal(addr, 'Re: ' + subject);
+      });
+    }
+  } catch (e) {
+    openModal('Error', '<p>' + esc(e.message) + '</p>', '<button class="btn" onclick="document.getElementById(\'modalClose\').click()">Close</button>');
+  }
+}
+
+function openComposeModal(to, subject) {
+  openModal(
+    'New Message',
+    '<div class="field"><label class="fl">To</label>' +
+      '<input type="email" id="cmpTo" value="' + esc(to || '') + '" placeholder="someone@example.com" /></div>' +
+    '<div class="field"><label class="fl">Subject</label>' +
+      '<input type="text" id="cmpSub" value="' + esc(subject || '') + '" placeholder="Subject" /></div>' +
+    '<div class="field"><label class="fl">Message</label>' +
+      '<textarea id="cmpBody" placeholder="Write your message…"></textarea></div>',
+    '<button class="btn ghost" id="cmpCancel">Cancel</button>' +
+    '<button class="btn primary" id="cmpSend">Send ✈</button>'
+  );
+
+  $('#cmpCancel').addEventListener('click', closeModal);
+  $('#cmpSend').addEventListener('click', async function () {
+    const to = $('#cmpTo').value.trim();
+    const sub = $('#cmpSub').value.trim();
+    const body = $('#cmpBody').value;
+
+    if (!to) { toast('Recipient required', 'error'); return; }
+
+    const btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+
+    try {
+      const raw =
+        'To: ' + to + '\r\n' +
+        'Subject: ' + sub + '\r\n' +
+        'Content-Type: text/plain; charset="UTF-8"\r\n\r\n' +
+        body;
+
+      await api('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ raw: b64urlEncode(raw) })
+      });
+
+      closeModal();
+      toast('Email sent', 'success');
+      if (currentView === 'gmail') go('gmail');
+    } catch (e) {
+      toast('Send failed: ' + e.message, 'error');
+      btn.disabled = false;
+      btn.textContent = 'Send ✈';
+    }
+  });
+}
+
+/* ============================================================
+   VIEW: DRIVE
+   ============================================================ */
+let driveQuery = '';
+
+async function renderDrive(root) {
+  root.innerHTML =
+    '<div class="toolbar">' +
+      '<div class="search-wrap"><input type="search" id="driveSearch" placeholder="Search files…" value="' + esc(driveQuery) + '" /></div>' +
+      '<button class="btn" id="driveRefresh">⟳</button>' +
+      '<button class="btn primary" id="driveUpload">⬆ Upload</button>' +
+      '<input type="file" id="driveFile" hidden />' +
+    '</div>' +
+    '<div class="card pad0" id="driveList">' +
+      '<div class="loading-inline"><div class="spinner sm"></div><span>Loading files…</span></div>' +
+    '</div>';
+
+  $('#driveRefresh', root).addEventListener('click', function () { go('drive'); });
+  $('#driveSearch', root).addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { driveQuery = this.value.trim(); go('drive'); }
+  });
+
+  const uploadInput = $('#driveFile', root);
+  $('#driveUpload', root).addEventListener('click', function () { uploadInput.click(); });
+  uploadInput.addEventListener('change', async function () {
+    const file = this.files && this.files[0];
+    if (!file) return;
+    await uploadToDrive(file);
+    this.value = '';
+    go('drive');
+  });
+
+  const q = driveQuery
+    ? "name contains '" + driveQuery.replace(/'/g, "\\'") + "' and trashed = false"
+    : 'trashed = false';
+
+  const url = 'https://www.googleapis.com/drive/v3/files?' +
+    'pageSize=40&orderBy=modifiedTime desc&q=' + encodeURIComponent(q) +
+    '&fields=files(id,name,mimeType,size,modifiedTime,webViewLink,iconLink)';
+
+  const data = await api(url);
+  const files = (data && data.files) ? data.files : [];
+  const box = $('#driveList', root);
+
+  if (!files.length) {
+    box.innerHTML = '<div class="empty"><div class="empty-ico">🗂️</div><h3>No files found</h3><p>Try another search or upload something.</p></div>';
+    return;
+  }
+
+  box.innerHTML = '<div class="list" style="padding:14px">' + files.map(function (f) {
+    return (
+      '<div class="row">' +
+        '<div class="rico">' + fileIcon(f.mimeType) + '</div>' +
+        '<div class="rmain">' +
+          '<div class="rtitle">' + esc(f.name) + '</div>' +
+          '<div class="rsub">' +
+            (f.size ? fmtBytes(f.size) + ' · ' : '') +
+            esc(relTime(f.modifiedTime)) +
+          '</div>' +
+        '</div>' +
+        (f.webViewLink
+          ? '<a class="btn sm" href="' + esc(f.webViewLink) + '" target="_blank" rel="noopener">Open</a>'
+          : '') +
+      '</div>'
+    );
+  }).join('') + '</div>';
+}
+
+async function uploadToDrive(file) {
+  try {
+    toast('Uploading ' + file.name + '…', 'info');
+
+    const boundary = 'trikku_boundary_' + Date.now();
+    const metadata = {
+      name: file.name,
+      mimeType: file.type || 'application/octet-stream'
+    };
+
+    const multipart = new Blob([
+      '--' + boundary + '\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n',
+      JSON.stringify(metadata),
+      '\r\n--' + boundary + '\r\nContent-Type: ' + metadata.mimeType + '\r\n\r\n',
+      file,
+      '\r\n--' + boundary + '--'
+    ], { type: 'multipart/related; boundary=' + boundary });
+
+    await api('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name', {
+      method: 'POST',
+      headers: { 'Content-Type': 'multipart/related; boundary=' + boundary },
+      body: multipart
+    });
+
+    toast('Uploaded: ' + file.name, 'success');
+  } catch (e) {
+    toast('Upload failed: ' + e.message, 'error');
+  }
+}
+
+/* ============================================================
+   VIEW: SHEETS
+   ============================================================ */
+let selectedSheetId = null;
+
+async function renderSheets(root) {
+  root.innerHTML =
+    '<div class="toolbar">' +
+      '<select id="sheetSelect" style="max-width:340px"><option>Loading spreadsheets…</option></select>' +
+      '<button class="btn" id="sheetRefresh">⟳</button>' +
+    '</div>' +
+    '<div id="sheetContent">' +
+      '<div class="loading-inline"><div class="spinner sm"></div><span>Loading…</span></div>' +
+    '</div>';
+
+  const data = await api(
+    'https://www.googleapis.com/drive/v3/files?' +
+    "q=" + encodeURIComponent("mimeType='application/vnd.google-apps.spreadsheet' and trashed=false") +
+    '&pageSize=50&orderBy=modifiedTime desc&fields=files(id,name)'
+  );
+
+  const files = (data && data.files) ? data.files : [];
+  const sel = $('#sheetSelect', root);
+  const content = $('#sheetContent', root);
+
+  if (!files.length) {
+    sel.innerHTML = '<option>No spreadsheets found</option>';
+    content.innerHTML = '<div class="empty"><div class="empty-ico">📊</div><h3>No spreadsheets</h3><p>Create a Google Sheet to see it here.</p></div>';
+    return;
+  }
+
+  sel.innerHTML = files.map(function (f) {
+    return '<option value="' + esc(f.id) + '">' + esc(f.name) + '</option>';
+  }).join('');
+
+  if (!selectedSheetId || !files.some(function (f) { return f.id === selectedSheetId; })) {
+    selectedSheetId = files[0].id;
+  }
+  sel.value = selectedSheetId;
+
+  sel.addEventListener('change', function () {
+    selectedSheetId = this.value;
+    loadSheetValues(content);
+  });
+  $('#sheetRefresh', root).addEventListener('click', function () {
+    loadSheetValues(content);
+  });
+
+  await loadSheetValues(content);
+}
+
+async function loadSheetValues(container) {
+  container.innerHTML = '<div class="loading-inline"><div class="spinner sm"></div><span>Reading sheet…</span></div>';
+  try {
+    const res = await api(
+      'https://sheets.googleapis.com/v4/spreadsheets/' + selectedSheetId + '/values/A1:Z100'
+    );
+    const rows = (res && res.values) ? res.values : [];
+
+    if (!rows.length) {
+      container.innerHTML = '<div class="empty"><div class="empty-ico">📄</div><h3>Empty sheet</h3><p>No data in range A1:Z100.</p></div>';
+      return;
+    }
+
+    const header = rows[0];
+    const body = rows.slice(1);
+
+    container.innerHTML =
+      '<div class="table-wrap"><table>' +
+        '<thead><tr>' + header.map(function (h) {
+          return '<th>' + esc(h || '') + '</th>';
+        }).join('') + '</tr></thead>' +
+        '<tbody>' + body.map(function (r) {
+          const cells = [];
+          for (let i = 0; i < header.length; i++) {
+            cells.push('<td>' + esc(r[i] == null ? '' : r[i]) + '</td>');
+          }
+          return '<tr>' + cells.join('') + '</tr>';
+        }).join('') + '</tbody>' +
+      '</table></div>' +
+      '<div style="margin-top:12px;font-size:11.5px;color:var(--muted)">' +
+        body.length + ' rows · ' + header.length + ' columns</div>';
+  } catch (e) {
+    container.innerHTML = '<div class="empty"><div class="empty-ico">⚠️</div><h3>Could not read sheet</h3><p>' + esc(e.message) + '</p></div>';
+  }
+}
+
+/* ============================================================
+   VIEW: BLOGGER
+   ============================================================ */
+let selectedBlogId = null;
+
+async function renderBlogger(root) {
+  root.innerHTML = '<div class="loading-inline"><div class="spinner sm"></div><span>Loading blogs…</span></div>';
+
+  let blogs = [];
+  try {
+    const data = await api('https://www.googleapis.com/blogger/v3/users/self/blogs');
+    blogs = (data && data.items) ? data.items : [];
+  } catch (e) {
+    root.innerHTML = '<div class="empty"><div class="empty-ico">📝</div><h3>No blogs available</h3><p>' + esc(e.message) + '</p></div>';
+    return;
+  }
+
+  if (!blogs.length) {
+    root.innerHTML = '<div class="empty"><div class="empty-ico">📝</div><h3>No blogs found</h3><p>This Google account has no Blogger blogs.</p></div>';
+    return;
+  }
+
+  if (!selectedBlogId || !blogs.some(function (b) { return b.id === selectedBlogId; })) {
+    selectedBlogId = blogs[0].id;
+  }
+
+  root.innerHTML =
+    '<div class="toolbar">' +
+      '<select id="blogSelect" style="max-width:340px">' +
+        blogs.map(function (b) {
+          return '<option value="' + esc(b.id) + '"' + (b.id === selectedBlogId ? ' selected' : '') + '>' +
+            esc(b.name) + '</option>';
+        }).join('') +
+      '</select>' +
+      '<button class="btn" id="blogRefresh">⟳</button>' +
+      '<div class="spacer"></div>' +
+      '<button class="btn primary" id="newPostBtn">＋ New Post</button>' +
+    '</div>' +
+    '<div class="card pad0" id="postsBox">' +
+      '<div class="loading-inline"><div class="spinner sm"></div><span>Loading posts…</span></div>' +
+    '</div>';
+
+  $('#blogSelect', root).addEventListener('change', function () {
+    selectedBlogId = this.value;
+    loadPosts($('#postsBox', root), blogs);
+  });
+  $('#blogRefresh', root).addEventListener('click', function () {
+    loadPosts($('#postsBox', root), blogs);
+  });
+  $('#newPostBtn', root).addEventListener('click', function () {
+    openPostModal(blogs);
+  });
+
+  await loadPosts($('#postsBox', root), blogs);
+}
+
+async function loadPosts(box, blogs) {
+  box.innerHTML = '<div class="loading-inline"><div class="spinner sm"></div><span>Loading posts…</span></div>';
+  try {
+    const data = await api(
+      'https://www.googleapis.com/blogger/v3/blogs/' + selectedBlogId + '/posts?maxResults=20'
+    );
+    const posts = (data && data.items) ? data.items : [];
+
+    if (!posts.length) {
+      box.innerHTML = '<div class="empty"><div class="empty-ico">📄</div><h3>No posts yet</h3><p>Write your first post.</p></div>';
+      return;
+    }
+
+    box.innerHTML = '<div class="list" style="padding:14px">' + posts.map(function (p) {
+      return (
+        '<div class="row">' +
+          '<div class="rico">📝</div>' +
+          '<div class="rmain">' +
+            '<div class="rtitle">' + esc(p.title || '(untitled)') + '</div>' +
+            '<div class="rsub">' + esc(relTime(p.published || p.updated)) + '</div>' +
+          '</div>' +
+          (p.url
+            ? '<a class="btn sm" href="' + esc(p.url) + '" target="_blank" rel="noopener">View</a>'
+            : '') +
+        '</div>'
+      );
+    }).join('') + '</div>';
+  } catch (e) {
+    box.innerHTML = '<div class="empty"><div class="empty-ico">⚠️</div><h3>Could not load posts</h3><p>' + esc(e.message) + '</p></div>';
+  }
+}
+
+function openPostModal(blogs) {
+  openModal(
+    'Create Blogger Post',
+    '<div class="field"><label class="fl">Blog</label>' +
+      '<select id="npBlog">' + blogs.map(function (b) {
+        return '<option value="' + esc(b.id) + '"' + (b.id === selectedBlogId ? ' selected' : '') + '>' + esc(b.name) + '</option>';
+      }).join('') + '</select></div>' +
+    '<div class="field"><label class="fl">Title</label>' +
+      '<input type="text" id="npTitle" placeholder="Post title" /></div>' +
+    '<div class="field"><label class="fl">Content (HTML allowed)</label>' +
+      '<textarea id="npContent" placeholder="<p>Hello world</p>"></textarea></div>',
+    '<button class="btn ghost" id="npCancel">Cancel</button>' +
+    '<button class="btn primary" id="npPublish">Publish</button>'
+  );
+
+  $('#npCancel').addEventListener('click', closeModal);
+  $('#npPublish').addEventListener('click', async function () {
+    const blogId = $('#npBlog').value;
+    const title = $('#npTitle').value.trim();
+    const content = $('#npContent').value;
+
+    if (!title) { toast('Title required', 'error'); return; }
+
+    const btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Publishing…';
+
+    try {
+      await api('https://www.googleapis.com/blogger/v3/blogs/' + blogId + '/posts/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: title, content: content })
+      });
+      closeModal();
+      toast('Post published', 'success');
+      selectedBlogId = blogId;
+      go('blogger');
+    } catch (e) {
+      toast('Publish failed: ' + e.message, 'error');
+      btn.disabled = false;
+      btn.textContent = 'Publish';
+    }
+  });
+}
+
+/* ============================================================
+   VIEW: YOUTUBE
+   ============================================================ */
+async function renderYouTube(root) {
+  root.innerHTML = '<div class="loading-inline"><div class="spinner sm"></div><span>Loading YouTube…</span></div>';
+
+  const chRes = await api('https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,contentDetails&mine=true');
+  const channel = (chRes && chRes.items && chRes.items[0]) ? chRes.items[0] : null;
+
+  if (!channel) {
+    root.innerHTML = '<div class="empty"><div class="empty-ico">▶️</div><h3>No YouTube channel</h3><p>This Google account has no YouTube channel.</p></div>';
+    return;
+  }
+
+  const st = channel.statistics || {};
+  const sn = channel.snippet || {};
+  const uploads = channel.contentDetails && channel.contentDetails.relatedPlaylists
+    ? channel.contentDetails.relatedPlaylists.uploads : null;
+
+  let videos = [];
+  if (uploads) {
+    try {
+      const plRes = await api('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=12&playlistId=' + uploads);
+      videos = (plRes && plRes.items) ? plRes.items : [];
+    } catch (e) { /* ignore */ }
+  }
+
+  let trending = [];
+  try {
+    const tRes = await api('https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&chart=mostPopular&maxResults=9&regionCode=IN');
+    trending = (tRes && tRes.items) ? tRes.items : [];
+  } catch (e) { /* ignore */ }
+
+  root.innerHTML = [
+    /* Channel card */
+    '<div class="card" style="margin-bottom:16px">',
+      '<div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">',
+        '<img src="' + esc(sn.thumbnails && sn.thumbnails.default ? sn.thumbnails.default.url : '') + '" ' +
+          'style="width:66px;height:66px;border-radius:50%;border:2px solid var(--border2)" alt="" />',
+        '<div style="flex:1;min-width:200px">',
+          '<h2 style="margin:0 0 4px;font-size:17px;font-weight:800">' + esc(sn.title || 'My Channel') + '</h2>',
+          '<p style="margin:0;font-size:12px;color:var(--muted)">' + esc(sn.customUrl || '') + '</p>',
+        '</div>',
+        '<a class="btn" href="https://studio.youtube.com" target="_blank" rel="noopener">Open Studio</a>',
+      '</div>',
+      '<div class="grid c4" style="margin-top:18px">',
+        '<div class="stat"><span class="label">Subscribers</span><span class="value">' + Number(st.subscriberCount || 0).toLocaleString() + '</span></div>',
+        '<div class="stat"><span class="label">Total Views</span><span class="value">' + Number(st.viewCount || 0).toLocaleString() + '</span></div>',
+        '<div class="stat"><span class="label">Videos</span><span class="value">' + Number(st.videoCount || 0).toLocaleString() + '</span></div>',
+      '</div>',
+    '</div>',
+
+    /* Recent uploads */
+    '<div class="card" style="margin-bottom:16px">',
+      '<div class="card-head"><span class="ico">🎬</span><h3>Recent Uploads</h3></div>',
+      videos.length
+        ? '<div class="list">' + videos.map(function (v) {
+            const s = v.snippet || {};
+            const vid = s.resourceId ? s.resourceId.videoId : '';
+            return (
+              '<div class="row">' +
+                '<div class="rico">▶️</div>' +
+                '<div class="rmain">' +
+                  '<div class="rtitle">' + esc(s.title || '') + '</div>' +
+                  '<div class="rsub">' + esc(relTime(s.publishedAt)) + '</div>' +
+                '</div>' +
+                (vid
+                  ? '<a class="btn sm" href="https://youtu.be/' + esc(vid) + '" target="_blank" rel="noopener">Watch</a>'
+                  : '') +
+              '</div>'
+            );
+          }).join('') + '</div>'
+        : '<div class="empty" style="padding:28px 12px"><div class="empty-ico">🎥</div><h3>No uploads</h3><p>Upload a video to see it here.</p></div>',
+    '</div>',
+
+    /* Trending */
+    '<div class="card">',
+      '<div class="card-head"><span class="ico">🔥</span><h3>Trending in India</h3></div>',
+      trending.length
+        ? '<div class="list">' + trending.map(function (v) {
+            const s = v.snippet || {};
+            const stats = v.statistics || {};
+            return (
+              '<div class="row">' +
+                '<img src="' + esc(s.thumbnails && s.thumbnails.default ? s.thumbnails.default.url : '') + '" ' +
+                  'style="width:64px;height:38px;object-fit:cover;border-radius:8px;flex:none" alt="" />' +
+                '<div class="rmain">' +
+                  '<div class="rtitle">' + esc(s.title || '') + '</div>' +
+                  '<div class="rsub">' + esc(s.channelTitle || '') + ' · ' +
+                    Number(stats.viewCount || 0).toLocaleString() + ' views</div>' +
+                '</div>' +
+                '<a class="btn sm" href="https://youtu.be/' + esc(v.id) + '" target="_blank" rel="noopener">Watch</a>' +
+              '</div>'
+            );
+          }).join('') + '</div>'
+        : '<div class="empty" style="padding:28px 12px"><div class="empty-ico">📉</div><h3>Trending unavailable</h3><p>Could not load trending videos.</p></div>',
+    '</div>'
+  ].join('');
+}
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+function boot() {
+  if (initGoogle()) {
+    go('dashboard');
+    return true;
+  }
+  return false;
+}
+
+window.addEventListener('load', function () {
+  if (!boot()) {
+    let tries = 0;
+    const timer = setInterval(function () {
+      if (boot() || ++tries > 24) {
+        clearInterval(timer);
+        if (tries > 24) go('dashboard');
+      }
+    }, 250);
+  }
+
+  if (!CONFIG.CLIENT_ID) {
+    setTimeout(function () {
+      toast('Setup needed: add your CLIENT_ID in the script.', 'error');
+    }, 900);
+  }
+});
+
+/* Fallback so the UI is never blank even if GIS is blocked */
+setTimeout(function () {
+  if (!$('#view-dashboard').innerHTML.trim()) {
+    go('dashboard');
+  }
+}, 1800);
+
+})();
+</script>
+</body>
+</html>
